@@ -1,6 +1,8 @@
 # ProjetAnonymisation
 
-Sous groupe 1 :
 CARADO Anthony
 PARENT Vincent
 DEJEAN Theotim
+
+CURMONT Charly
+LASSERRE Stéphane
