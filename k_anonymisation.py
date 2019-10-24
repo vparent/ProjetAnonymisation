@@ -1,19 +1,16 @@
 import pandas 
 
-def read_data(file_data):
-    df = pandas.read_csv(file_data, index_col = 0)
-    print(df)
+gt= pandas.read_csv("ground_truth.csv", index_col = 0)
 
-def write_data(file_data_src,file_data_dst):
-    df = pandas.read_csv(file_data_src, index_col = 0)
+def print_data(file_data):
+    print(gt)
 
+def write_data(file_data_dst):
     df.to_csv(file_data_dst, sep = '\t')
 
 if __name__ == "__main__":
-    read_data('ground_truth.csv')
-    write_data('ground_truth.csv','test_write.csv')
-    #print(len(datalist))
-   # print_data(30)
+    #write_data('test_write.csv')
+    print_data(gt)
 
 """
 datalist=[]
