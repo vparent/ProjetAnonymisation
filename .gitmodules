@@ -1,0 +1,3 @@
+[submodule "darc_aicrowd"]
+	path = darc_aicrowd
+	url = http://gitlab.ikb.info.uqam.ca/alaurent/darc_aicrowd.git
