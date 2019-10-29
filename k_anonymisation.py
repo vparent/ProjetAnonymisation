@@ -1,9 +1,13 @@
 import pandas 
 
-gt= pandas.read_csv("ground_truth.csv", index_col = 0)
+gt= pandas.read_csv("ground_truth.csv")
 
 def print_data(file_data):
-    print(gt)
+    #print(gt)
+    #print(gt.describe())
+    #print(gt.head())
+    #print(gt["id_user"].value_counts())
+    print(gt.loc[(gt["qty"]==6)])
 
 def write_data(file_data_dst):
     df.to_csv(file_data_dst, sep = '\t')
