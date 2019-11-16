@@ -11,7 +11,7 @@ with open('ground_truth.csv') as truth:
         if row['date'][0:7] == temp:
             month.append(row)
         else:
-            with open("ground_truth_mounth_"+str(i)+".csv", 'w') as writer:
+            with open("ground_truth_month_"+str(i)+".csv", 'w') as writer:
                 fields = ['id_user','date','hours','id_item','price','qty']
                 mwriter = csv.DictWriter(writer, delimiter=',', fieldnames=fields)
                 mwriter.writeheader()
@@ -20,5 +20,4 @@ with open('ground_truth.csv') as truth:
             month=[row]
             temp = row['date'][0:7]
             i += 1
-
 
