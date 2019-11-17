@@ -12,19 +12,59 @@ gt9= pandas.read_csv("ground_truth_month_9.csv")
 gt10= pandas.read_csv("ground_truth_month_10.csv")
 gt11= pandas.read_csv("ground_truth_month_11.csv")
 gt12= pandas.read_csv("ground_truth_month_12.csv")
+gt13= pandas.read_csv("ground_truth_month_13.csv")
+
+ngt=[gt1,gt2,gt3,gt4,gt5,gt6,gt7,gt8,gt9,gt10,gt11,gt12,gt13]
 
 alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L"]
+date = ["JA","FE","MA","AP","MY","JN","JL","AU","SE","OC","NO","DE"]
 
-def write_data(file_data_dst,co):
-    co.to_csv(file_data_dst, sep = ',', index=False)
 
-def concat():
-    frames = [gt,gt2,gt3,gt4,gt5,gt6,gt7,gt8,gt9,gt10,gt11,gt12]
-    conc = pandas.concat(frames)
+
+#########################################################################
+# concatenation and write
+    
+def write_data(file_data_dst):  ##write data to csv file
+    gt1.to_csv(file_data_dst, sep = ',', index=False)
+
+def concat(): ## concatenate all csv file into 1 dataframe
+    conc = pandas.concat(ngt)
     return conc
 
-if __name__ == "__main__":
-    #co= concat()
-    #modif_id(0)
-    write_data("modif_m1.csv",co)
+def write_data_conc(file_data_dst,co):  ## write concatenate dataframe to csv file
+    co.to_csv(file_data_dst, sep = ',', index=False)
+    
 
+###########################################################################
+# modif data
+
+## Modif id_user ==> letter + id + month
+def modif_user(index): 
+    for g in ngt:
+        if index == 13 : 
+            index = 1
+        g["letter"] = alphabet[index-1]
+        g["months"] = date[index-1]
+        g["id_user"] = g["letter"] + g["id_user"].apply(str) + g["months"]
+        del g["letter"]
+        del g["months"]
+        index+=1
+        #print(g.id_user)
+
+
+#modif price ==> price btw 0 and 10€ ==> [0:10]
+def modif_price():
+    for g in ngt:
+        g["price"] = g["price"].mean()
+
+############################################################################
+
+if __name__ == "__main__":
+    modif_user(12)
+    modif_price()
+    #print(gt1.id_user)
+    #print(gt1.price)
+    #print(gt1.dtypes)
+    co=concat()
+    #print(co.id_user)
+    write_data_conc("submission_modif_anthony.csv", co)
