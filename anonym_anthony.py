@@ -15,7 +15,7 @@ gt12= pandas.read_csv("ground_truth_month_12.csv")
 gt13= pandas.read_csv("ground_truth_month_13.csv")
 
 ngt=[gt1,gt2,gt3,gt4,gt5,gt6,gt7,gt8,gt9,gt10,gt11,gt12,gt13]
-
+nngt=[gt1,gt2,gt3,gt4,gt5]
 alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L"]
 date = ["JA","FE","MA","AP","MY","JN","JL","AU","SE","OC","NO","DE"]
 
@@ -57,14 +57,27 @@ def modif_price():
     for g in ngt:
         g["price"] = g["price"].mean()
 
+def test_del(conc):
+    conc["id_user"]= "DEL"
+
+
+def mul_price(co):
+    co["price"] *= co["qty"]
+    #co.id_item[co.id_item.str.contains('A')] = "COUCOU"
+
+
 ############################################################################
 
 if __name__ == "__main__":
-    modif_user(12)
-    modif_price()
+    #modif_user(12)
+    #modif_price()
+    
     #print(gt1.id_user)
     #print(gt1.price)
     #print(gt1.dtypes)
+    
     co=concat()
+    mul_price(co)
+    #test_del(co)
     #print(co.id_user)
     write_data_conc("submission_modif_anthony.csv", co)
