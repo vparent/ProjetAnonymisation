@@ -104,7 +104,6 @@ def suppr_singleton_item():
 
 def gen_new_ids(ngt):
     for gt in ngt:
-        corresp = {}
         new_uids = []
 
         for uid in set(gt['id_user']):
@@ -116,8 +115,8 @@ def gen_new_ids(ngt):
             while htransac[borne:borne+5] in new_uids and borne < 123:
                 borne += 1
             new_uids.append(htransac[borne:borne+5])
-            corresp[uid] = htransac[borne:borne+5]
-            gt[uid] = corresp[uid]
+
+            gt.loc[gt['id_user'] == uid,'id_user'] = htransac[borne:borne+5]
 
 ############################################################################
 
