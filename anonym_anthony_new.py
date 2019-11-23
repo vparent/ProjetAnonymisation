@@ -1,4 +1,6 @@
 import pandas
+import hashlib
+import random
 
 gt = pandas.read_csv("ground_truth.csv")
 gt1= pandas.read_csv("ground_truth_month_1.csv")
@@ -100,11 +102,29 @@ def suppr_singleton_item():
     for g in ngt:
         print(g["id_user","id_item"])
 
+def gen_new_ids(ngt):
+    for gt in ngt:
+        corresp = {}
+        new_uids = []
+
+        for uid in set(gt['id_user']):
+            transacs = []
+            for row in gt.loc[gt['id_user'] == uid].values:
+                transacs.append(f"{row[0]}{row[1]}{row[2]}{row[3]}{row[4]}{row[5]}")
+            htransac = hashlib.sha512(str.encode(random.choice(list(set(transacs))))).hexdigest()
+            borne = 0
+            while htransac[borne:borne+5] in new_uids and borne < 123:
+                borne += 1
+            new_uids.append(htransac[borne:borne+5])
+            corresp[uid] = htransac[borne:borne+5]
+            gt[uid] = corresp[uid]
 
 ############################################################################
 
 if __name__ == "__main__":
     modif_user(12)
+
+    gen_new_ids(ngt)
     
     #print(gt1.id_user)
     #print(gt1.price)
