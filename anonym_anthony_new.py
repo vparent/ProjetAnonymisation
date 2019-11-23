@@ -122,7 +122,7 @@ def gen_new_ids(ngt):
 ############################################################################
 
 if __name__ == "__main__":
-    modif_user(12)
+    #modif_user(12)
 
     gen_new_ids(ngt)
     
