@@ -65,14 +65,17 @@ def gen_new_ids(ngt):
 
         for uid in set(gt['id_user']):
             transacs = []
-            for row in gt.loc[gt['id_user'] == uid].values:
-                transacs.append(f"{row[0]}{row[1]}{row[2]}{row[3]}{row[4]}{row[5]}")
-            htransac = hashlib.sha512(str.encode(random.choice(list(set(transacs))))).hexdigest()
-            borne = 0
-            while htransac[borne:borne+5] in new_uids and borne < 123:
-                borne += 1
-            new_uids.append(htransac[borne:borne+5])
-            corresp[uid] = htransac[borne:borne+5]
+            if uid == 'DEL':
+                corresp[uid] = 'DEL'
+            else:
+                for row in gt.loc[gt['id_user'] == uid].values:
+                    transacs.append(f"{row[0]}{row[1]}{row[2]}{row[3]}{row[4]}{row[5]}")
+                htransac = hashlib.sha512(str.encode(random.choice(list(set(transacs))))).hexdigest()
+                borne = 0
+                while htransac[borne:borne+5] in new_uids and borne < 123:
+                    borne += 1
+                new_uids.append(htransac[borne:borne+5])
+                corresp[uid] = htransac[borne:borne+5]
 
             gt.loc[gt['id_user'] == uid, 'id_user'] = corresp[uid]
 
