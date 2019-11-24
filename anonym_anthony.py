@@ -57,20 +57,14 @@ def modif_price():
     for g in ngt:
         g["price"] = g["price"].mean()
 
-def test_del(conc):
-    conc["id_user"]= "DEL"
-
 
 def mul_price(co):
     co["price"] *= co["qty"]
-    #co.id_item[co.id_item.str.contains('A')] = "COUCOU"
-
 
 ############################################################################
 
 if __name__ == "__main__":
     #modif_user(12)
-    #modif_price()
     
     #print(gt1.id_user)
     #print(gt1.price)
@@ -78,6 +72,4 @@ if __name__ == "__main__":
     
     co=concat()
     mul_price(co)
-    #test_del(co)
-    #print(co.id_user)
     write_data_conc("submission_modif_anthony.csv", co)
