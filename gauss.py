@@ -87,11 +87,11 @@ def field_avg(rows, field_):
         th = 0
         tm = 0
         for r in rows:
-            th, tm = th + int(r[field_][:2]), int(r[field_][-2:])
+            th, tm = th + int(r[field_][:2]), tm + int(r[field_][-2:])
         n = len(rows)
         h = th // n
         m = tm // n + int((th // n - h) * 60)
-        return h + m // 60, m % 60
+        return str_back(h + m // 60) + ":" + str_back(m % 60)
     else:  # field_ in ['price', 'qty', 'date']
         res = 0
         for r in rows:
@@ -159,6 +159,7 @@ if __name__ == "__main__":
         # write_file("my_trousse_1", rows_my)
         # rows_my = tt_test.shuffle_uniq_usr_item(rows_my, file)
         # rows_my = tt_test.avg_prices_items(rows_my)
-        rows_my = tt_test.shuffle_uniq_usr_item(rows_my, file)
-        write_file("my_trousse", rows_my, fields_)
+        # rows_my = tt_test.shuffle_uniq_usr_item(rows_my, file)
+        rows_my = tt_test.smooth_half_hour(rows_my)
+        write_file("shuffling_hours", rows_my, fields_)
         print("\n\nTemps d execution : %s secondes ---" % (time.time() - start_time))

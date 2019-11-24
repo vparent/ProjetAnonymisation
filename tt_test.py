@@ -200,7 +200,7 @@ def shuffle_uniq_usr_item(rows, file):
     uniq_lines = []
     for i in range(len(rows)):
         for u in uniq_item_user:
-            if rows[i]['id_user'] == u['id_user'] and rows[i]['id_item'] == u['id_item']\
+            if rows[i]['id_user'] == u['id_user'] and rows[i]['id_item'] == u['id_item'] \
                     and rows[i]['date'][:-3] == u['date']:
                 uniq_lines.append(i)
     random.seed(int(time.time()))
@@ -228,9 +228,10 @@ def shuffle_uniq_usr_item(rows, file):
 
 def month_translator(m):
     if type(m) is int:
-        return "2010/12" if m == 0 else "2011/" + gauss.str_back((m-1))
-    else:  #m is str
+        return "2010/12" if m == 0 else "2011/" + gauss.str_back((m - 1))
+    else:  # m is str
         return 1 if m == "2010/12" else int(m[-2:]) + 1
+
 
 def write_item_users(file):
     for i in range(1, 14):
@@ -260,9 +261,90 @@ def refer_item_usrs(rows, file):
     gauss.write_file(file[:-4] + "_item_usrs", temp, ['id_item', 'users'])
 
 
-def shuffle_half_hour(rows):
-    t = rows[0]['hours']
-    i = 1
-    temp = [rows[0]]
-    #TODO
-    #while
+def smooth_half_hour(rows):
+    """
+    DMA
+    groups between 25 and 75, hours egal to the avg of the hours of the groups
+    :param rows:
+    :return:
+    """
+    mrows = rows.copy()
+    verif = [0]*len(rows)
+    i = 0
+    while i < len(mrows):
+        j = i
+        t = mrows[j]['date']
+        while i < len(mrows) and mrows[i]['date'] == t:
+            i += 1
+        tot = i - j
+        nb = tot
+        distrib = [j]  # initialisation
+        while nb > 75:
+            step = random.randint(25, 75)
+            distrib.append(step + distrib[-1])
+            nb -= step
+        if 25 <= nb <= 75:
+            distrib.append(nb + distrib[-1])
+        elif nb < 25:
+            taille = len(distrib)
+            place = 0
+            reste = 0
+            for k in range(1, taille):
+                place += 75 - distrib[k] + distrib[k-1]
+                reste += distrib[k] - distrib[k-1] - 25
+            if place <= nb:
+                while nb > 0:
+                    mini = 3
+                    choisable = []
+                    for k in range(1, taille):
+                        diff = distrib[k] - distrib[k - 1]
+                        if diff < 75:
+                            choisable.append(k)
+                            mini = min(mini, 75 - diff)
+                    step = random.randint(1, min(mini, nb))
+                    choice = random.choice(choisable)
+                    for k in range(choice, taille):
+                        distrib[k] += step
+                    nb -= step
+            else:
+                align = random.randint(25 - nb, min(75 - nb, reste))
+                distrib.append(distrib[-1] + nb + align)
+                while align > 0:
+                    mini = 3
+                    choisable = []
+                    for k in range(1, taille):
+                        diff = distrib[k] - distrib[k-1]
+                        if diff > 25:
+                            choisable.append(k)
+                            mini = min(mini, diff - 25)
+                    step = random.randint(1, min(mini, align))
+                    change = random.choice(choisable)
+                    for k in range(change, taille):
+                        distrib[k] -= step
+                    align -= step
+        for e in range(1, len(distrib)):
+            cur = distrib[e-1]
+            k = distrib[e] - distrib[e - 1]
+            val = gauss.field_avg(mrows[cur:cur + k], 'hours')
+            for l in range(k):
+                if not cur + l >= len(rows):
+                    mrows[cur + l]['hours'] = val
+                    verif[cur + l] += 1
+                else:
+                    verif += ['WTF']
+        #print(i, distrib[-1])
+    wtf1 = 0
+    wtf2 = 0
+    wtf3 = 0
+    print(wtf1, wtf2, wtf3)
+    """
+    for e in verif:
+        wtf1 += 1 if e == 2 else 0
+        wtf2 += 1 if e == 0 else 0
+        wtf3 += 1 if e == "WTF" else 0
+    print(wtf1, wtf2, wtf3)
+    if wtf1 != 0 or wtf2 != 0 or wtf3 != 0:
+        return shuffle_half_hour(rows)
+    else:
+    """
+    return mrows
