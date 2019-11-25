@@ -233,7 +233,7 @@ def gen_new_ids(ngt):
             else:
                 for row in gt.loc[gt['id_user'] == uid].values:
                     transacs.append(f"{row[0]}{row[1]}{row[2]}{row[3]}{row[4]}{row[5]}")
-                htransac = hashlib.sha512(str.encode(random.choice(list(set(transacs))))).hexdigest()
+                htransac = hashlib.sha512(str(random.randint(0, 256)) + str.encode(random.choice(list(set(transacs))))).hexdigest()
                 borne = 0
                 while htransac[borne:borne+5] in new_uids and borne < 123:
                     borne += 1
