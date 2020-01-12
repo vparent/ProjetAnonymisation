@@ -45,7 +45,12 @@ def stats(rows):
 def stats_targets(rows, list_fields):
     """
     DMA
-    date format change in AAAA/MM
+    :param fun_id_user: function to modify all users with it
+    :param fun_date: function to modify all dates with it
+    :param fun_hours: function to modify all hours with it
+    :param fun_id_item: function to modify all id_items with it
+    :param fun_price: function to modify all prices with it
+    :param fun_qty: function to modify all qty with it
     :param rows: (dict) rows of csv file
     :param list_fields: (list str) exact names of fields to compare
     :return: (dict) keys : values of fields sep ' ' ; values : times keys war encountred
@@ -55,7 +60,7 @@ def stats_targets(rows, list_fields):
         temp = ""
         for f in list_fields:
             if f == 'date':
-                temp += r[f][:-3]
+                temp += r[f][-3]
             else:
                 temp += str(r[f])
             temp += ' '
@@ -156,20 +161,20 @@ def change_row(rows, i, j, field_):
     return rows
 
 
-def read_csv_file(path):
-    with open(path) as truth:
-        reader = csv.DictReader(truth)
-        row1 = reader.__next__()
-        res = [row1]
-        for row in reader:
-            res.append(row)
-    return res
+#def read_csv_file(path):
+#    with open(path) as truth:
+#        reader = csv.DictReader(truth)
+#        row1 = reader.__next__()
+#        res = [row1]
+#        for row in reader:
+#            res.append(row)
+#    return res
 
 
 def month_extremities(f):
     file = f[:-4] + "_month_extremities" + ".csv"
     if not isfile(file):
-        rows = read_csv_file(f)
+        rows = gauss.csv_getter(f)
         dic_lines_a_month = dict()
         for i in range(len(rows)):
             if rows[i]['date'][0:7] in dic_lines_a_month.keys():
@@ -185,7 +190,7 @@ def month_extremities(f):
         for e in month_ends.items():
             res.append({'month': e[0], 'begin': e[1][0], 'end': e[1][1]})
         gauss.write_file(file[:-4], res, ['month', 'begin', 'end'])
-    return read_csv_file(file)
+    return gauss.csv_getter(file)
 
 
 def shuffle_uniq_usr_item(rows, file):
@@ -213,7 +218,8 @@ def shuffle_uniq_usr_item(rows, file):
                 deb_m, end_m = int(m['begin']), int(m['end'])
                 month = m['month']
         j = random.randint(deb_m, end_m)
-        imonth = gauss.csv_getter("ground_truth_month_" + str(month_translator(month)) + "_item_usrs.csv")
+        imonth = reference_item_usrs(rows, file[-4] + "_month_" + str(month_translator(month)) + ".csv")
+        # imonth = gauss.csv_getter("ground_truth_month_" + str(month_translator(month)) + "_item_usrs.csv")
         item_users = []  # just declaration
         for item in imonth:
             if item['id_item'] == rows[i]['id_item']:
@@ -239,6 +245,12 @@ def write_item_users(file):
         rows = gauss.csv_getter(f)
         refer_item_usrs(rows, f)
     return
+
+
+def reference_item_usrs(rows, file):
+    if not isfile(file[:-4] + "_item_usrs" + ".csv"):
+        refer_item_usrs(rows, file)
+    return gauss.csv_getter(file[:-4] + "_item_usrs" + ".csv")
 
 
 def refer_item_usrs(rows, file):
@@ -332,7 +344,7 @@ def smooth_half_hour(rows):
                     verif[cur + l] += 1
                 else:
                     verif += ['WTF']
-        #print(i, distrib[-1])
+        # print(i, distrib[-1])
     wtf1 = 0
     wtf2 = 0
     wtf3 = 0
@@ -348,3 +360,32 @@ def smooth_half_hour(rows):
     else:
     """
     return mrows
+
+
+def get_deleted_lines(rows):
+    rows_my = []
+    rows_del = []
+    ind_deleted = []
+    pos = 0
+    for r in rows:
+        if r['id_user'] == 'DEL':
+            rows_del.append(r)
+            ind_deleted.append(pos)
+        else:
+            rows_my.append(r)
+        pos += 1
+    return rows_my, rows_del, ind_deleted
+
+
+def merge_rows(rows, rows_del, ind_deleted):
+    my_rows = rows.copy()
+    pos = 0
+    for ind in ind_deleted:
+        if ind == 0:
+            my_rows = [rows_del[pos]] + my_rows
+        elif ind == len(my_rows):
+            my_rows = my_rows + [rows_del[pos]]
+        else:  # ind strict in the
+            my_rows = my_rows[:ind] + [rows_del[pos]] + my_rows[ind:]
+        pos += 1
+    return my_rows

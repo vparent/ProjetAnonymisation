@@ -8,8 +8,8 @@ def user_nb_apparitions_per_month(gt, s):
     dicoA = f(s)
     dicoT = f(gt)
 
-    resA = split_stats_target(dicoA)
-    resT = split_stats_target(dicoT)
+    resA = split_stats_target(dicoA, list_fields)
+    resT = split_stats_target(dicoT, list_fields)
 
     res = [[] for k in range(14)]
     nbs = [[] for k in range(14)]
