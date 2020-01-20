@@ -56,7 +56,7 @@ def outputffile(Ffile, usr_ps):
     
     #Ffile_sorti=np.asarray(temp)
     #numpy.savetxt("Ffile_sorti.csv",Ffile_sorti,fmt="%s",delimeter=",")
-    chaine_temp =""
+    chaine_temp ="id_user,0,1,2,3,4,5,6,7,8,9,10,11,12\n"
     for k in temp:
         for j in k[:-1]:
             chaine_temp+=j+","

@@ -53,7 +53,7 @@ def main():
     #on recupere les fichiers
     ground_truth = np.genfromtxt('ground_truth.csv', delimiter=',', dtype= str)
     S = np.genfromtxt('S_dupasquier_sub_1.csv', delimiter=',', dtype= str)
-
+    #print(ground_truth)
     #liste des id_user
     usr_ps= np.array(list(set(S[1:,0])))
     Ffile = np.array([list(set(ground_truth[1:,0]))])
@@ -67,17 +67,18 @@ def main():
         Ffile=np.append(Ffile,[[list_per_month[i]]*4034],axis=0)
 
 
-    print(recup_fonc(),"\n")
+    #print(recup_fonc(),"\n")
     dico = recup_fonc()
     liste_ffile=[]
     for k in dico.keys():
-        exec("liste_ffile.append("+k+"(ground_truth,S,Ffile))")
+        exec("liste_ffile.append("+k+"(ground_truth,S))")
     Ffile = calcul_moy(Ffile,liste_ffile,dico)
 
     outputffile(Ffile,usr_ps)
+    
 #On appel la fonction qui importe tout
 list_fonc = import_all('./')
-print(list_fonc)
+#print(list_fonc)
 for i in list_fonc:
     sys.path.append(i[0][0])
     for k in i[1]:

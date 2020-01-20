@@ -9,7 +9,7 @@ def get_month(k):
         return 0
 
 
-def mouette(ground_truth,S,Ffile):
+def mouette(ground_truth,S):
     print("c'est la fonction mouette du fichier attacun")
     Ffile = np.array([list(set(ground_truth[1:,0]))])
 

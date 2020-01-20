@@ -1,7 +1,7 @@
 import numpy as np
 from attacun import *
 
-def mouette2(ground_truth,S,Ffile):
+def mouette2(ground_truth,S):
     print("c'est la fonction mouette2 du fichier mouette")
     Ffile = np.array([list(set(ground_truth[1:,0]))])
 
