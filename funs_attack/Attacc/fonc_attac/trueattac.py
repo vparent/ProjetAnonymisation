@@ -1,11 +1,19 @@
 import numpy as np
 from attacun import *
 
+def csv_translate(f):
+    list_ret = [[k for k in f[0].keys()]]
+    for i in f :
+        list_ret.append([])
+        for j in i.values():
+            list_ret[-1].append(str(j))
+    return np.array(list_ret)
+
 def ecart_type(l_gt,l_ps):
     t_gt=len(l_gt)
     t_ps=len(l_ps)
     if t_gt<t_ps:
-        return None
+        return 0
     else :
         l_gt.sort()
         l_ps.sort()
@@ -34,9 +42,11 @@ def ecart_type(l_gt,l_ps):
 
     for i in l_dif:
         vari += ((i - moy)**2)/t_ps
-    
-    return vari
-
+    v_temp=np.sqrt(vari)
+    if v_temp>100:
+        return 0
+    else :
+        return 100-v_temp
 
 
 
@@ -53,11 +63,12 @@ def calcul_distance_date_hor(date):
     #On ajoute le nbr de jour * 1440
     tot += (int(date[0][-2:])-1)*1440
 
-    return tot
+    return tot/(30*1440)*100
 
-def distancehoraireetdate(ground_truth,S):
+def distancehoraireetdate(ground_truth_bis,S_bis):
     print("c'est la fonction qui calcul la distance par rapport a la date et a l'horaire")
-    
+    S=csv_translate(S_bis)
+    ground_truth=csv_translate(ground_truth_bis)
     Ffile = np.array([list(set(ground_truth[1:,0]))])
 
     #le dico permet de faire que chaque id_user de ground truth correspond à un 
@@ -66,7 +77,7 @@ def distancehoraireetdate(ground_truth,S):
         dico_usr_gt[Ffile[0][i]]=i
     #print(dico_usr_gt)
     list_per_month = [{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    for k in S:
+    for k in S[1:]:
         list_per_month[get_month(k)][k[0]]=0
     
     for i in range (13):
@@ -98,6 +109,7 @@ def distancehoraireetdate(ground_truth,S):
             liste_dist_ps.append([calcul_distance_date_hor([i[1],i[2]])])
         else:
             liste_dist_ps[liste_idusr_ps[mois_ps][i[0]]].append(calcul_distance_date_hor([i[1],i[2]]))
+    
     print("fin des calcul de distance, place a l'ecart type\n(enfin la variance car flemme de faire la racine)")
     #Calcul variances
     for i in range (len(liste_idusr_gt)):
@@ -106,20 +118,22 @@ def distancehoraireetdate(ground_truth,S):
                 #Attention ligne supra mega chiaaaaante
                 #print("i=",i," j=",j," k=",k,"\nliste_idusr_gt[i][k]",liste_idusr_gt[i][k] )
                 ec_ty = ecart_type(liste_dist_gt[liste_idusr_gt[i][k]],liste_dist_ps[liste_idusr_ps[i][j]])
+                #print("peut etre avant", ec_ty)
                 Ffile[i+1][dico_usr_gt[k]][j] = ec_ty
                 if ec_ty != None:
                     if ec_ty > ec_ty_max:
                         ec_ty_max = ec_ty 
     print("Voila le grand calcul final *_* (on met la note sur 100)")
-
-    for i in range (13):
+    print(ec_ty_max)
+    """for i in range (13):
         for j in range (len(Ffile[i+1])):
             for k in Ffile[i+1][j].keys():
                 if Ffile[i+1][j][k]==None:
                     Ffile[i+1][j][k]=0
                 else:
+                    #print("source du bug ?",(1 - (Ffile[i+1][j][k]/ec_ty_max))*100)
                     Ffile[i+1][j][k] = (1 - (Ffile[i+1][j][k]/ec_ty_max))*100
-    
+    """
     print("Fin du bordel")
 
     """

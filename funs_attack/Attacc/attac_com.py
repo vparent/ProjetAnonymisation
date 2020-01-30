@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import csv
 import subprocess
 
 #Fonction pour tout importer
@@ -51,30 +52,42 @@ def main():
     
 
     #on recupere les fichiers
-    ground_truth = np.genfromtxt('ground_truth.csv', delimiter=',', dtype= str)
-    S = np.genfromtxt('S_dupasquier_sub_1.csv', delimiter=',', dtype= str)
+    #ground_truth = np.genfromtxt('ground_truth.csv', delimiter=',', dtype= str)
+    #S = np.genfromtxt('S_dupasquier_sub_1.csv', delimiter=',', dtype= str)
+    ground_truth = csv_getter('ground_truth.csv')
+    #S = csv_getter('S_k4nU2.csv')
+    S = csv_getter('ground_truth.csv')
+    
+    
     #print(ground_truth)
     #liste des id_user
-    usr_ps= np.array(list(set(S[1:,0])))
-    Ffile = np.array([list(set(ground_truth[1:,0]))])
+    #print("csv_getter",S)
+    #print("csv_translate",csv_translate(S))
+    
+    usr_ps= np.array(list(set(csv_translate(S)[1:,0])))
+    Ffile = np.array([list(set(csv_translate(ground_truth)[1:,0]))])
 
     #le dico permet de faire que chaque id_user de ground truth correspond à un 
     dico_usr_gt = {}
     list_per_month = [{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    for k in S:
+    for k in csv_translate(S)[1:]:
         list_per_month[get_month(k)][k[0]]=0
     for i in range (13):
         Ffile=np.append(Ffile,[[list_per_month[i]]*4034],axis=0)
-
-
+    
+    #[["id","date"],]
+    #gt[int,int]
+    #gt[int][str]
+    #lt[{id:}]
     #print(recup_fonc(),"\n")
     dico = recup_fonc()
     liste_ffile=[]
     for k in dico.keys():
         exec("liste_ffile.append("+k+"(ground_truth,S))")
-    Ffile = calcul_moy(Ffile,liste_ffile,dico)
+    Ffile_bis = calcul_moy(list(set(csv_translate(ground_truth)[1:,0])),liste_ffile,dico)
 
-    outputffile(Ffile,usr_ps)
+    outputffile(Ffile_bis,usr_ps)
+    #outputffile(liste_ffile[0],usr_ps)
     
 #On appel la fonction qui importe tout
 list_fonc = import_all('./')
