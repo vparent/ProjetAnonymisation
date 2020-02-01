@@ -24,7 +24,6 @@ def ecart_type(l_gt,l_ps):
                 j+=1
             if j==t_gt:
                 temp = l_gt[len(l_dif)-t_ps:]
-                #print(temp)
                 for l in temp:
                     l_dif.append(l)
             else:
@@ -33,7 +32,6 @@ def ecart_type(l_gt,l_ps):
                 else:
                     l_dif.append(l_gt[j])
                 j+=1
-    #print("l_gt", l_gt,"l_ps",l_ps," l_dif", l_dif)
     for i in range (t_ps):
         l_dif[i]-=l_ps[i]
     #Variance
@@ -69,27 +67,26 @@ def distancehoraireetdate(ground_truth_bis,S_bis):
     print("c'est la fonction qui calcul la distance par rapport a la date et a l'horaire")
     S=csv_translate(S_bis)
     ground_truth=csv_translate(ground_truth_bis)
-    Ffile = np.array([list(set(ground_truth[1:,0]))])
+
+    liste_idusr_gt=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
+    liste_dist_gt=[]
+
+
+    Ffile=[]
+    Ffile.append(list(set(ground_truth[1:,0])))
+    
+    #On parcours la liste des ffiles partiels
+    for month in range (13):
+        if len(Ffile) == (month+1):
+            Ffile.append([])
+            for tt_mettre in range (len(Ffile[0])):
+                Ffile[month+1].append({})
 
     #le dico permet de faire que chaque id_user de ground truth correspond à un 
     dico_usr_gt = {}
     for i in range (len(Ffile[0])):
         dico_usr_gt[Ffile[0][i]]=i
-    #print(dico_usr_gt)
-    list_per_month = [{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    for k in S[1:]:
-        list_per_month[get_month(k)][k[0]]=0
-    
-    for i in range (13):
-        Ffile=np.append(Ffile,[[list_per_month[i]]*4034],axis=0)
-    #print(ecart_type([1,2,50,30,32],[5,6,7,27]))
-    
-    #Liste des distances
-    #liste_dist_ps=["rien"]
-    liste_idusr_gt=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    liste_dist_gt=[]
-    #dist_max = 0
-    ec_ty_max = 0
+    print()
     print("Calcul de distance des gt")
     for i in ground_truth[1:]:
         mois_gt=get_month(i)
@@ -102,6 +99,7 @@ def distancehoraireetdate(ground_truth_bis,S_bis):
     #Place au PS
     liste_idusr_ps=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
     liste_dist_ps=[]
+    
     for i in S[1:]:
         mois_ps=get_month(i)
         if i[0] not in liste_idusr_ps[mois_ps]:
@@ -110,66 +108,17 @@ def distancehoraireetdate(ground_truth_bis,S_bis):
         else:
             liste_dist_ps[liste_idusr_ps[mois_ps][i[0]]].append(calcul_distance_date_hor([i[1],i[2]]))
     
-    print("fin des calcul de distance, place a l'ecart type\n(enfin la variance car flemme de faire la racine)")
+    print("fin des calcul de distance, place a l'ecart type")
     #Calcul variances
-    for i in range (len(liste_idusr_gt)):
+    print("taille du premier mois idusr_ps = ", len(liste_idusr_gt[1]), "taille du premier mois dist_ps", len(liste_idusr_ps[1]))
+    for i in range (13):
         for j in liste_idusr_ps[i].keys():
             for k in liste_idusr_gt[i].keys():
-                #Attention ligne supra mega chiaaaaante
-                #print("i=",i," j=",j," k=",k,"\nliste_idusr_gt[i][k]",liste_idusr_gt[i][k] )
                 ec_ty = ecart_type(liste_dist_gt[liste_idusr_gt[i][k]],liste_dist_ps[liste_idusr_ps[i][j]])
-                #print("peut etre avant", ec_ty)
                 Ffile[i+1][dico_usr_gt[k]][j] = ec_ty
-                if ec_ty != None:
-                    if ec_ty > ec_ty_max:
-                        ec_ty_max = ec_ty 
-    print("Voila le grand calcul final *_* (on met la note sur 100)")
-    print(ec_ty_max)
-    """for i in range (13):
-        for j in range (len(Ffile[i+1])):
-            for k in Ffile[i+1][j].keys():
-                if Ffile[i+1][j][k]==None:
-                    Ffile[i+1][j][k]=0
-                else:
-                    #print("source du bug ?",(1 - (Ffile[i+1][j][k]/ec_ty_max))*100)
-                    Ffile[i+1][j][k] = (1 - (Ffile[i+1][j][k]/ec_ty_max))*100
-    """
+                
+
     print("Fin du bordel")
 
-    """
-    for i in S[1:]:
-        #Distance de ps a partir du début du mois
-        dist_ps = calcul_distance_date_hor([i[1],i[2]])
-        mois_ps = get_month(i)
-        #print(ground_truth)
-        for j in ground_truth[1:]:
-            if mois_ps==get_month(j):
-                #distance de gt a partir du début du mois
-                dist_gt = calcul_distance_date_hor([j[1],j[2]])
-                #Calcul du max
-                dist_local = abs(dist_gt-dist_ps)
-                if dist_max<dist_local:
-                    dist_max = dist_local
-                #On detourne Ffile qui au lieux de stocker des notes,
-                #va stocker des indices(/curseur) sur liste_dist_ps ou seront stocké
-                #les distances calculées
-
-                #####choix du mois#choix d'id_user_gt#id_user_ps dans dico
-                if Ffile[mois_ps+1][dico_usr_gt[j[0]]][i[0]]==0:
-
-                    Ffile[mois_ps+1][dico_usr_gt[j[0]]][i[0]]=len(liste_dist_ps)
-                    liste_dist_ps.append([abs(dist_ps-dist_gt),1])
-
-                else:
-
-                    curseur = Ffile[get_month(i)+1][dico_usr_gt[j[0]]][i[0]]
-                    liste_dist_ps[curseur][0]=(liste_dist_ps[curseur][0]*liste_dist_ps[curseur][1]+abs(dist_ps-dist_gt))/(liste_dist_ps[curseur][1]+1)
-                    liste_dist_ps[curseur][1]+=1
-    print("Distance on été calculé on passe au save")
-    for i in Ffile[1:]:
-        for j in i:
-            for k in j.keys():
-                j[k]=liste_dist_ps[j[k]][0]
-                
-    """
+    
     return Ffile

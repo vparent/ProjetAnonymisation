@@ -5,19 +5,14 @@ import csv
 
 #On renvoie la moyenne de toute les fonctions
 def calcul_moy(list_id,liste_ffile,dico):
-    #print(liste_ffile[0][1][0])
-    #print(len(liste_ffile),"liste de tes morts",len(liste_ffile[0][1]),"mon ffile",len(Ffile[1]))
-    #On isole les coefficient et le diviseur commun pour faire la moyenne
+   #On isole les coefficient et le diviseur commun pour faire la moyenne
     coef = [k for k in dico.values()]
     divi = sum(coef)
-    print("coef ",coef,"helo",divi,"coef sur divi", coef[0]/divi)
-    #print(coef[len(coef)+1])
     dico_indice_gt = {}
     dico_idusr_ps=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
     list_note_adr=[[],[],[],[],[],[],[],[],[],[],[],[],[]]
     Ffile = []
     Ffile.append(list_id)
-    print(Ffile,"\n taille ffile",len(Ffile),"taille liste",len(Ffile[0]))
     for indice in range (len(Ffile[0])):
         dico_indice_gt[Ffile[0][indice]] = indice
     #On parcours la liste des ffiles partiels
@@ -30,7 +25,6 @@ def calcul_moy(list_id,liste_ffile,dico):
                     
             for num_ps in range (len(liste_ffile[k][0])):
                 num_gt = dico_indice_gt[liste_ffile[k][0][num_ps]]
-                print("num_gt",num_gt)
                 for id_ps in liste_ffile[k][month+1][num_ps].keys():
                     if id_ps not in Ffile[month+1][num_gt]:
                         Ffile[month+1][num_gt][id_ps] = (coef[k]/divi)*liste_ffile[k][month+1][num_ps][id_ps]
@@ -39,7 +33,7 @@ def calcul_moy(list_id,liste_ffile,dico):
 
 
 
-"""
+                        """
                         if k == len(liste_ffile)-1:
                             if j not in dico_idusr_ps[l-1]:
                                 dico_idusr_ps[l-1][j] = len(list_note_adr[l-1])
@@ -89,19 +83,14 @@ def calcul_moy(list_id,liste_ffile,dico):
     mon_fichier = open("Ffile_sorti.csv", "w") # Argh j'ai tout écrasé !
     mon_fichier.write(chaine_temp)
     mon_fichier.close()"""   
-    #print(Ffile[1][0])
-    #print(Ffile[15])
     return Ffile
 
 #Fonction qui recherche le maximum d'un dico en prenant en compte une liste discriminante
 def recherche_max_dico(dico,dejavu):
-    #print(dico)
     liste_keys=[k for k in dico.keys()]
-    #print(liste_keys)
     note_max=0
     chaine=None
     for i in liste_keys[1:]:
-        #print(i)
         if True:
             if dico[i] >= note_max:
                 note_max = dico[i]
@@ -126,8 +115,6 @@ def outputffile(Ffile, usr_ps):
                 temp[k].append(chaine)
                 dejavu[l-1][chaine]=1
     
-    #Ffile_sorti=np.asarray(temp)
-    #numpy.savetxt("Ffile_sorti.csv",Ffile_sorti,fmt="%s",delimeter=",")
     chaine_temp ="id_user,0,1,2,3,4,5,6,7,8,9,10,11,12\n"
     for k in temp:
         for j in k[:-1]:
@@ -145,11 +132,11 @@ def recup_fonc():
     k=[2,3]
     ligne_entier = file_recup.readlines()
     for ligne in ligne_entier:
-        for i in range(len(ligne)):
-            if ligne[i] == " ":
-                dico[str(ligne[i+1:len(ligne)-1])] = int(ligne[0:i])
+        if ligne[0] != "#":
+            for i in range(len(ligne)):
+                if ligne[i] == " ":
+                    dico[str(ligne[i+1:len(ligne)-1])] = int(ligne[0:i])
     print("Le dico",dico)
-    #print(k[6])
 
     return dico
 
