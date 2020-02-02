@@ -86,7 +86,6 @@ def distancehoraireetdate(ground_truth_bis,S_bis):
     dico_usr_gt = {}
     for i in range (len(Ffile[0])):
         dico_usr_gt[Ffile[0][i]]=i
-    print()
     print("Calcul de distance des gt")
     for i in ground_truth[1:]:
         mois_gt=get_month(i)

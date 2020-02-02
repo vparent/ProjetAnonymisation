@@ -2,6 +2,27 @@ import numpy as np
 import sys
 import subprocess
 import csv
+import os
+
+
+def recherche_max_ffile(dico_idusr_ps,list_note_adr,dejavu_ps,dejavu_gt):
+    combo_max=[-1,-1,None]
+    #print(list_note_adr)
+    for id_ps in dico_idusr_ps.keys():
+        if id_ps not in dejavu_ps:
+            for note_adr in list_note_adr[dico_idusr_ps[id_ps]]:
+                if note_adr[1] not in dejavu_gt:
+                    if combo_max[0]<=note_adr[0]:
+                        combo_max[0]=note_adr[0]
+                        combo_max[1]=note_adr[1]
+                        combo_max[2]=id_ps
+                    break
+    return combo_max
+
+
+
+
+
 
 #On renvoie la moyenne de toute les fonctions
 def calcul_moy(list_id,liste_ffile,dico):
@@ -9,8 +30,6 @@ def calcul_moy(list_id,liste_ffile,dico):
     coef = [k for k in dico.values()]
     divi = sum(coef)
     dico_indice_gt = {}
-    dico_idusr_ps=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    list_note_adr=[[],[],[],[],[],[],[],[],[],[],[],[],[]]
     Ffile = []
     Ffile.append(list_id)
     for indice in range (len(Ffile[0])):
@@ -30,60 +49,84 @@ def calcul_moy(list_id,liste_ffile,dico):
                         Ffile[month+1][num_gt][id_ps] = (coef[k]/divi)*liste_ffile[k][month+1][num_ps][id_ps]
                     else :
                         Ffile[month+1][num_gt][id_ps] += (coef[k]/divi)*liste_ffile[k][month+1][num_ps][id_ps]
+    return Ffile
 
-
-
-                        """
-                        if k == len(liste_ffile)-1:
-                            if j not in dico_idusr_ps[l-1]:
-                                dico_idusr_ps[l-1][j] = len(list_note_adr[l-1])
-                                list_note_adr[l-1].append([[Ffile[l][m][j],m]])
+def output_bis(Ffile):
+    dico_idusr_ps=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
+    list_note_adr=[[],[],[],[],[],[],[],[],[],[],[],[],[]]
+    dejavu_gt=[set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set()]
+    dejavu_ps=[set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set(),set()]
+    combo_max=[[],[],[],[],[],[],[],[],[],[],[],[],[]]
+    for month in range(13):
+        for nb_gt in range(4034):
+            for id_ps in Ffile[month+1][nb_gt]:
+                if id_ps not in dico_idusr_ps[month]:
+                    dico_idusr_ps[month][id_ps] = len(list_note_adr[month])
+                    list_note_adr[month].append([[Ffile[month+1][nb_gt][id_ps],nb_gt]])
+                    #print("id_ps in ",list_note_adr[month],"id_ps", id_ps)
+                    #input()
+                else:
+                    non=1
+                    for ij in range (len(list_note_adr[month][dico_idusr_ps[month][id_ps]])):
+                        if list_note_adr[month][dico_idusr_ps[month][id_ps]][ij][0]<Ffile[month+1][nb_gt][id_ps]:
+                            non=0
+                            if ij == 0:
+                                list_note_adr[month][dico_idusr_ps[month][id_ps]]=[[Ffile[month+1][nb_gt][id_ps],nb_gt]]+list_note_adr[month][dico_idusr_ps[month][id_ps]]
+                                #print("ij == 0 :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
+                                #input()
+                                break
                             else:
-                                non=1
-                                for ij in range (len(list_note_adr[l-1][dico_idusr_ps[l-1][j]])):
-                                    if list_note_adr[l-1][dico_idusr_ps[l-1][j]][ij][0]<Ffile[l][m][j]:
-                                        non=0
-                                        if ij == 0:
-                                            list_note_adr[l-1][dico_idusr_ps[l-1][j]]=[[Ffile[l][m][j],m]]+list_note_adr[l-1][dico_idusr_ps[l-1][j]][ij:]
-                                            break
-                
-                                        list_note_adr[l-1][dico_idusr_ps[l-1][j]]=list_note_adr[l-1][dico_idusr_ps[l-1][j]][:ij-1]+[[Ffile[l][m][j],m]]+list_note_adr[l-1][dico_idusr_ps[l-1][j]][ij:]
-                                        break
-                                if non:
-                                    list_note_adr[l-1][dico_idusr_ps[l-1][j]]+=[[Ffile[l][m][j],m]]
+                                list_note_adr[month][dico_idusr_ps[month][id_ps]]=list_note_adr[month][dico_idusr_ps[month][id_ps]][:ij-1]+[[Ffile[month+1][nb_gt][id_ps],nb_gt]]+list_note_adr[month][dico_idusr_ps[month][id_ps]][ij:]
+                                #print("ij != 0 :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
+                                #input()
+                                break
+                    if non:
+                        list_note_adr[month][dico_idusr_ps[month][id_ps]]+=[[Ffile[month+1][nb_gt][id_ps],nb_gt]]
+                        #print("non :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
+                        #input()
     #recherche de max
+    print("On DEL tout")
+    for k in range (13):
+        for l in range (4034):
+            Ffile[k+1][l]="DEL"
+    print(Ffile[2][4])
     print("debut de l'attribution des correspondances finals")
-    triplet_max[l,m,j]
-    note_max=0
-    dejavu={}
-    for k in range(13):
-        for l in dico_idusr_ps.keys():
-            if l in dejavu
-    for k in usr_ps:
-        dejavu[k]=0
-    temp=[]
-    for k in range (len(Ffile[0])):
-        temp.append([Ffile[0][k]])
-        for l in range (1,14):
-            chaine=recherche_max_dico(Ffile[l][k],dejavu)
-            if chaine == None:
-                temp[k].append("DEL")
-            else:
-                temp[k].append(chaine)
-                dejavu[chaine]=1
+    month_max = [-1,-1]
+    for k in range (13):
+        combo_max[k]=recherche_max_ffile(dico_idusr_ps[k],list_note_adr[k],dejavu_ps[k],dejavu_gt[k])
+        if combo_max[k] != None:
+            if combo_max[k][0]>month_max[0]:
+                month_max[0]=combo_max[k][0]
+                month_max[1]=k
+    print("init fait passe au gros calcul")
+    while month_max[1]!=(-1):
+        mois=month_max[1]
+        #print("nb de ps",sum([len(k) for k in dejavu_ps]), "mois utilisé", mois)
+        
+        nb_gt=combo_max[month_max[1]][1]
+        id_ps=combo_max[month_max[1]][2]
+        Ffile[mois][nb_gt]=id_ps
+        print("mois",mois,"id_ps", id_ps, "nb_gt", nb_gt,"ffile",Ffile[mois][nb_gt])
+        dejavu_gt[mois].add(nb_gt)
+        dejavu_ps[mois].add(id_ps)
+        combo_max[mois]=recherche_max_ffile(dico_idusr_ps[mois],list_note_adr[mois],dejavu_ps[mois],dejavu_gt[mois])
+        month_max = [-1,-1]
+        for k in range (13):
+            if combo_max[k] != None:
+                if combo_max[k][0]>month_max[0]:
+                    month_max[0]=combo_max[k][0]
+                    month_max[1]=k
     
-    #Ffile_sorti=np.asarray(temp)
-    #numpy.savetxt("Ffile_sorti.csv",Ffile_sorti,fmt="%s",delimeter=",")
     chaine_temp ="id_user,0,1,2,3,4,5,6,7,8,9,10,11,12\n"
-    for k in temp:
-        for j in k[:-1]:
-            chaine_temp+=j+","
-        chaine_temp+=k[-1]+"\n"
+    
+    for k in range(4034):
+        for l in range(13):
+            chaine_temp+=Ffile[l][k]+","
+        chaine_temp+=Ffile[l][13]+"\n"
 
     mon_fichier = open("Ffile_sorti.csv", "w") # Argh j'ai tout écrasé !
     mon_fichier.write(chaine_temp)
-    mon_fichier.close()"""   
-    return Ffile
+    mon_fichier.close()
 
 #Fonction qui recherche le maximum d'un dico en prenant en compte une liste discriminante
 def recherche_max_dico(dico,dejavu):
@@ -98,22 +141,23 @@ def recherche_max_dico(dico,dejavu):
     return chaine
 
 #Fonction de sortie
-def outputffile(Ffile, usr_ps):
+def outputffile(Ffile_bis, usr_ps):
     print("output en cours")
     dejavu=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
     for k in usr_ps:
         for l in range (13):
             dejavu[l][k]=0
     temp=[]
-    for k in range (len(Ffile[0])):
-        temp.append([Ffile[0][k]])
-        for l in range (1,14):
-            chaine=recherche_max_dico(Ffile[l][k],dejavu[l-1])
+    for k in range (len(Ffile_bis[0])):
+        temp.append([Ffile_bis[0][k]])
+        for l in range (13):
+            chaine=recherche_max_dico(Ffile_bis[l+1][k],dejavu[l])
             if chaine == None:
                 temp[k].append("DEL")
             else:
                 temp[k].append(chaine)
-                dejavu[l-1][chaine]=1
+                dejavu[l][chaine]=1
+            #print(len(temp[k]))
     
     chaine_temp ="id_user,0,1,2,3,4,5,6,7,8,9,10,11,12\n"
     for k in temp:

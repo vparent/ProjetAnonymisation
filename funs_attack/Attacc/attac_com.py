@@ -68,14 +68,19 @@ def main():
 
 
     usr_ps= np.array(list(set(csv_translate(S)[1:,0])))
-    
+
+    #for k in range
     dico = recup_fonc()
 
     liste_ffile=[]
     for k in dico.keys():
         exec("liste_ffile.append("+k+"(ground_truth,S))")
+    
+    
+    print("On fait la moyenne")
     Ffile_bis = calcul_moy(list(set(csv_translate(ground_truth)[1:,0])),liste_ffile,dico)
-
+    print("go to output")
+    #output_bis(Ffile_bis)
     outputffile(Ffile_bis,usr_ps)
     
 #On appel la fonction qui importe tout
