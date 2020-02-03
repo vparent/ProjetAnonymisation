@@ -21,7 +21,14 @@ def recherche_max_ffile(dico_idusr_ps,list_note_adr,dejavu_ps,dejavu_gt):
 
 
 
-
+def output_name(name):
+    name_r=name[6:-4]
+    for i in range (len(name_r)):
+        if name_r[i]=='S':
+            if i< len(name_r):
+                name_r=name_r[:i]+'F'+name_r[i+1:]
+    print(name_r)
+    return "resultat/"+name_r+"-LCOINSTI.csv"
 
 
 #On renvoie la moyenne de toute les fonctions
@@ -141,7 +148,7 @@ def recherche_max_dico(dico,dejavu):
     return chaine
 
 #Fonction de sortie
-def outputffile(Ffile_bis, usr_ps):
+def outputffile(Ffile_bis, usr_ps,nom):
     print("output en cours")
     dejavu=[{},{},{},{},{},{},{},{},{},{},{},{},{}]
     for k in usr_ps:
@@ -165,7 +172,7 @@ def outputffile(Ffile_bis, usr_ps):
             chaine_temp+=j+","
         chaine_temp+=k[-1]+"\n"
 
-    mon_fichier = open("Ffile_sorti.csv", "w") # Argh j'ai tout écrasé !
+    mon_fichier = open(nom, "w") # Argh j'ai tout écrasé !
     mon_fichier.write(chaine_temp)
     mon_fichier.close()
 
@@ -183,6 +190,7 @@ def recup_fonc():
     print("Le dico",dico)
 
     return dico
+
 
 #Fonction qui récupère le fichier .csv
 def csv_getter(f):

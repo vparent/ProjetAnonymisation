@@ -47,7 +47,7 @@ def import_all(directory):
         return list_ret
 
 
-def main():
+def main(cible):
     
 
     #on recupere les fichiers
@@ -60,7 +60,7 @@ def main():
     #########################
     #Fichier S a attaquer !!#
     #########################
-    S = csv_getter('ground_truth.csv')
+    S = csv_getter(cible)
     
     
     
@@ -78,10 +78,15 @@ def main():
     
     
     print("On fait la moyenne")
-    Ffile_bis = calcul_moy(list(set(csv_translate(ground_truth)[1:,0])),liste_ffile,dico)
+    list_id=list(set(csv_translate(ground_truth)[1:,0]))
+    list_id=[int(k) for k in list_id]
+    list_id.sort()
+    list_id=[str(k) for k in list_id]
+    Ffile_bis = calcul_moy(list_id,liste_ffile,dico)
+    name_l=output_name(cible)
     print("go to output")
     #output_bis(Ffile_bis)
-    outputffile(Ffile_bis,usr_ps)
+    outputffile(Ffile_bis,usr_ps,name_l)
     
 #On appel la fonction qui importe tout
 list_fonc = import_all('./')
@@ -90,5 +95,9 @@ for i in list_fonc:
     for k in i[1]:
         if k !="attac_com":
             exec("from "+k+" import *")
-main()
+
+ls_result_cible = subprocess.check_output(["ls", "./cible"])
+ls_result_cible = str(ls_result_cible)[2:-3].split("\\n")
+for a in ls_result_cible:
+    main("cible/"+a)
 
