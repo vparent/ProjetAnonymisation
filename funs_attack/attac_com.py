@@ -79,8 +79,8 @@ def main(cible,list_temp):
     for k in dico.keys():
 
         print("Fonction utilisé : ",k)
+        list_coef.append(dico[k])
         if temp_opti:
-            list_coef.append(dico[k])
             nom_cible=extract_name(cible)
             if (k+"_"+nom_cible+".txt") in set(list_temp):
                 print("On est deja la, nom fonction= ",k," nom cible ",nom_cible)
