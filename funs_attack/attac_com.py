@@ -52,7 +52,9 @@ def main(cible,list_temp):
 
     #on recupere les fichiers
     ground_truth = csv_getter('ground_truth.csv')
+    
 
+    temp_opti = False
 
 
 
@@ -73,23 +75,24 @@ def main(cible,list_temp):
     dico = recup_fonc()
     list_coef=[]
     liste_ffile=[]
+    print("list_temp",list_temp)
     for k in dico.keys():
 
-        list_coef.append(dico[k])
-        nom_cible=extract_name(cible)
-        if (k+"_"+nom_cible+".txt") in list_temp:
-            print("On est deja la, nom fonction= ",k," nom cible ",nom_cible)
-            liste_ffile.append(input_ffile_temp(k,nom_cible))
+        print("Fonction utilisé : ",k)
+        if temp_opti:
+            list_coef.append(dico[k])
+            nom_cible=extract_name(cible)
+            if (k+"_"+nom_cible+".txt") in set(list_temp):
+                print("On est deja la, nom fonction= ",k," nom cible ",nom_cible)
+                liste_ffile.append(input_ffile_temp(k,nom_cible))
 
-        else :
-            print("on exportnom fonction= ",k," nom cible ",nom_cible)
-            print("coucou1")
+            else :
+                print("on exportnom fonction= ",k," nom cible ",nom_cible)
+                exec("liste_ffile.append("+k+"(ground_truth,S))")
+                output_ffile_temp(k,nom_cible,liste_ffile[-1])
+        else:
             exec("liste_ffile.append("+k+"(ground_truth,S))")
-            print("coucou2")
-            outputffile(k,nom_cible,liste_ffile[-1])
-            print("coucou3")
-            print(liste_ffile[-1],"\n type du ffile",type(liste_ffile[-1]))
-    
+            
     #print(liste_ffile)
     print("On fait la moyenne")
     list_id=list(set(csv_translate(ground_truth)[1:,0]))
@@ -113,8 +116,8 @@ for i in list_fonc:
 ls_result_cible = subprocess.check_output(["ls", "./cible"])
 ls_result_cible = str(ls_result_cible)[2:-3].split("\\n")
 
-list_temp = subprocess.check_output(["ls", "./cible"])
-list_temp = str(ls_result_cible)[2:-3].split("\\n")
+list_temp = subprocess.check_output(["ls", "./temp"])
+list_temp = str(list_temp)[2:-3].split("\\n")
 for a in ls_result_cible:
     main("cible/"+a,list_temp)
 

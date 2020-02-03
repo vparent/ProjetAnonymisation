@@ -207,7 +207,7 @@ def csv_getter(f):
 def output_ffile_temp(nom_fonc,nom_fichier,Ffile):
     #nomfonction_nomfichier.csv
     nom_util = "temp/"+nom_fonc+"_"+nom_fichier+".txt"
-    print("nom_util",nom_util)
+    #print("nom_util",nom_util)
     mon_fichier = open(nom_util, "w")
     mon_fichier.write(str(Ffile))
     mon_fichier.close()
