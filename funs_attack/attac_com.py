@@ -2,6 +2,7 @@ import numpy as np
 import sys
 import csv
 import subprocess
+import time
 
 #Fonction pour tout importer
 def import_all(directory):
@@ -48,13 +49,12 @@ def import_all(directory):
 
 
 def main(cible,list_temp):
-    
 
     #on recupere les fichiers
     ground_truth = csv_getter('ground_truth.csv')
     
 
-    temp_opti = False
+    temp_opti = True
 
 
 
@@ -104,7 +104,8 @@ def main(cible,list_temp):
     print("go to output")
     #output_bis(Ffile_bis)
     outputffile(Ffile_bis,usr_ps,name_l)
-    
+
+time0 = time.time()
 #On appel la fonction qui importe tout
 list_fonc = import_all('./')
 for i in list_fonc:
@@ -120,4 +121,4 @@ list_temp = subprocess.check_output(["ls", "./temp"])
 list_temp = str(list_temp)[2:-3].split("\\n")
 for a in ls_result_cible:
     main("cible/"+a,list_temp)
-
+print("Temps = " + str(time.time() - time0))
