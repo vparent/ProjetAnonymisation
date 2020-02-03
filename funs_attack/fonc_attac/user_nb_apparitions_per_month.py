@@ -23,11 +23,14 @@ def user_nb_apparitions_per_month(gt, s):
         else:
             n = res[0].index(r['id_user'])
         y = month_translator(r['date'])
-        nbs[n][y] += r['nb']
+        nbs[y][n] += r['nb']
     for r in resA:
         y = month_translator(r['date'])
         for i in range(len(res[0])):
-            res[y][i][r['id_user']] = r['nb'] / nbs[y][i] * 100
+            if nbs[y][i] < r['nb']:
+                res[y][i][r['id_user']] = 0
+            else:
+                res[y][i][r['id_user']] = (1 - (abs(r['nb'] - nbs[y][i]) / 366)) * 100
     return res
 
 

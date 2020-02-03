@@ -47,8 +47,7 @@ def split_stats_target(dic, list_fields):
         for i in range(len(list_fields)):
             temp[list_fields[i]] = stemp[i]
         temp['nb'] = r[1]
-        res += temp
-        print(temp)
+        res += [temp]
     return res
 
 def stats_targets_hours(rows, hours=False):
