@@ -3,7 +3,7 @@ import sys
 import subprocess
 import csv
 import os
-
+import ast
 
 def recherche_max_ffile(dico_idusr_ps,list_note_adr,dejavu_ps,dejavu_gt):
     combo_max=[-2,-2,None]
@@ -29,6 +29,12 @@ def output_name(name):
                 name_r=name_r[:i]+'F'+name_r[i+1:]
     print(name_r)
     return "resultat/"+name_r+"-LCOINSTI.csv"
+
+def extract_name(name):
+    name_r=name[6:-4]
+    
+    print(name_r)
+    return name_r
 
 
 #On renvoie la moyenne de toute les fonctions
@@ -198,5 +204,18 @@ def csv_getter(f):
             rows.append(r)
     return rows
 
+def output_ffile_temp(nom_fonc,nom_fichier,Ffile):
+    #nomfonction_nomfichier.csv
+    nom_util = "temp/"+nom_fonc+"_"+nom_fichier+".txt"
+    print("nom_util",nom_util)
+    mon_fichier = open(nom_util, "w")
+    mon_fichier.write(str(Ffile))
+    mon_fichier.close()
 
-            
+def input_ffile_temp(nom_fonc,nom_fichier):
+    #nomfonction_nomfichier.csv
+    nom_util = "temp/"+nom_fonc+"_"+nom_fichier+".txt"
+    mon_fichier = open(nom_util, "r")
+    Ffile = ast.literal_eval(mon_fichier.read())
+    mon_fichier.close()
+    return(Ffile)

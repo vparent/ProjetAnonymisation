@@ -47,7 +47,7 @@ def import_all(directory):
         return list_ret
 
 
-def main(cible):
+def main(cible,list_temp):
     
 
     #on recupere les fichiers
@@ -74,10 +74,23 @@ def main(cible):
     list_coef=[]
     liste_ffile=[]
     for k in dico.keys():
+
         list_coef.append(dico[k])
-        exec("liste_ffile.append("+k+"(ground_truth,S))")
+        nom_cible=extract_name(cible)
+        if (k+"_"+nom_cible+".txt") in list_temp:
+            print("On est deja la, nom fonction= ",k," nom cible ",nom_cible)
+            liste_ffile.append(input_ffile_temp(k,nom_cible))
+
+        else :
+            print("on exportnom fonction= ",k," nom cible ",nom_cible)
+            print("coucou1")
+            exec("liste_ffile.append("+k+"(ground_truth,S))")
+            print("coucou2")
+            outputffile(k,nom_cible,liste_ffile[-1])
+            print("coucou3")
+            print(liste_ffile[-1],"\n type du ffile",type(liste_ffile[-1]))
     
-    
+    #print(liste_ffile)
     print("On fait la moyenne")
     list_id=list(set(csv_translate(ground_truth)[1:,0]))
     list_id=[int(k) for k in list_id]
@@ -99,6 +112,9 @@ for i in list_fonc:
 
 ls_result_cible = subprocess.check_output(["ls", "./cible"])
 ls_result_cible = str(ls_result_cible)[2:-3].split("\\n")
+
+list_temp = subprocess.check_output(["ls", "./cible"])
+list_temp = str(ls_result_cible)[2:-3].split("\\n")
 for a in ls_result_cible:
-    main("cible/"+a)
+    main("cible/"+a,list_temp)
 
