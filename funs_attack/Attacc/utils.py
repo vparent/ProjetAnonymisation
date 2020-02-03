@@ -6,7 +6,7 @@ import os
 
 
 def recherche_max_ffile(dico_idusr_ps,list_note_adr,dejavu_ps,dejavu_gt):
-    combo_max=[-1,-1,None]
+    combo_max=[-2,-2,None]
     #print(list_note_adr)
     for id_ps in dico_idusr_ps.keys():
         if id_ps not in dejavu_ps:
@@ -79,18 +79,15 @@ def output_bis(Ffile):
                             non=0
                             if ij == 0:
                                 list_note_adr[month][dico_idusr_ps[month][id_ps]]=[[Ffile[month+1][nb_gt][id_ps],nb_gt]]+list_note_adr[month][dico_idusr_ps[month][id_ps]]
-                                #print("ij == 0 :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
-                                #input()
+                                
                                 break
                             else:
                                 list_note_adr[month][dico_idusr_ps[month][id_ps]]=list_note_adr[month][dico_idusr_ps[month][id_ps]][:ij-1]+[[Ffile[month+1][nb_gt][id_ps],nb_gt]]+list_note_adr[month][dico_idusr_ps[month][id_ps]][ij:]
-                                #print("ij != 0 :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
-                                #input()
+                                
                                 break
                     if non:
                         list_note_adr[month][dico_idusr_ps[month][id_ps]]+=[[Ffile[month+1][nb_gt][id_ps],nb_gt]]
-                        #print("non :",list_note_adr[month][dico_idusr_ps[month][id_ps]])
-                        #input()
+                        
     #recherche de max
     print("On DEL tout")
     for k in range (13):
@@ -102,7 +99,7 @@ def output_bis(Ffile):
     for k in range (13):
         combo_max[k]=recherche_max_ffile(dico_idusr_ps[k],list_note_adr[k],dejavu_ps[k],dejavu_gt[k])
         if combo_max[k] != None:
-            if combo_max[k][0]>month_max[0]:
+            if combo_max[k][0]>=month_max[0]:
                 month_max[0]=combo_max[k][0]
                 month_max[1]=k
     print("init fait passe au gros calcul")
@@ -142,7 +139,7 @@ def recherche_max_dico(dico,dejavu):
     chaine=None
     for i in liste_keys[1:]:
         if True:
-            if dico[i] >= note_max:
+            if dico[i] > note_max:
                 note_max = dico[i]
                 chaine = i
     return chaine
