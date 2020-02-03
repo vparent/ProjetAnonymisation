@@ -9,8 +9,8 @@ def csv_getter(f):
     return rows
 
 def str_comp():
-    A= csv_getter("F_ground_truth-LCOINSTI.csv")
-    B= csv_getter("F_ground_truth.csv")
+    A= csv_getter("funs_attack/resultat/F_on_sait_pas_1-LCOINSTI.csv")
+    B= csv_getter("funs_attack/resultat/F_ONSP1-LCOINSTI.csv")
     print("B=",B[3]["1"])
     #list_n=[k for k in A[:]["id_user"]]
     dif=0

@@ -13,7 +13,6 @@ def return_index_id(dico, key, month, tab):
         n = tab[0].index(id_)
     return tab, n
 
-
 def id_item(gt, s):
     res = [[] for k in range(14)]
     dicoA = stats_targets_hours(s)
@@ -51,3 +50,7 @@ def id_item(gt, s):
                 for k in range(len(temp)):
                     result[i][j][temp[k]] = cnt[k] / len(res_tot_gt[i][j]) * 100  # %age of (month, id_item) corresponding to this id_user
     return result
+
+
+def id_item2(gt, s):
+    return id_item(gt, s)

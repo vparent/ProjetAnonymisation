@@ -135,9 +135,10 @@ def output_bis(Ffile):
 #Fonction qui recherche le maximum d'un dico en prenant en compte une liste discriminante
 def recherche_max_dico(dico,dejavu):
     liste_keys=[k for k in dico.keys()]
+    #print(liste_keys)
     note_max=0
     chaine=None
-    for i in liste_keys[1:]:
+    for i in liste_keys:
         if True:
             if dico[i] > note_max:
                 note_max = dico[i]
