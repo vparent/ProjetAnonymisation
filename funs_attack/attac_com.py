@@ -71,9 +71,10 @@ def main(cible):
 
     #for k in range
     dico = recup_fonc()
-
+    list_coef=[]
     liste_ffile=[]
     for k in dico.keys():
+        list_coef.append(dico[k])
         exec("liste_ffile.append("+k+"(ground_truth,S))")
     
     
@@ -82,7 +83,7 @@ def main(cible):
     list_id=[int(k) for k in list_id]
     list_id.sort()
     list_id=[str(k) for k in list_id]
-    Ffile_bis = calcul_moy(list_id,liste_ffile,dico)
+    Ffile_bis = calcul_moy(list_id,liste_ffile,list_coef)
     name_l=output_name(cible)
     print("go to output")
     #output_bis(Ffile_bis)

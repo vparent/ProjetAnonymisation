@@ -32,9 +32,8 @@ def output_name(name):
 
 
 #On renvoie la moyenne de toute les fonctions
-def calcul_moy(list_id,liste_ffile,dico):
-   #On isole les coefficient et le diviseur commun pour faire la moyenne
-    coef = [k for k in dico.values()]
+def calcul_moy(list_id,liste_ffile,coef):
+    #On isole les coefficient et le diviseur commun pour faire la moyenne
     divi = sum(coef)
     dico_indice_gt = {}
     Ffile = []

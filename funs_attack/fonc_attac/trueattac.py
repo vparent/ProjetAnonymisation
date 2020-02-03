@@ -12,6 +12,7 @@ def csv_translate(f):
 def ecart_type(l_gt,l_ps):
     t_gt=len(l_gt)
     t_ps=len(l_ps)
+    l_ret=[]
     if t_gt<t_ps:
         return 0
     else :
@@ -32,19 +33,25 @@ def ecart_type(l_gt,l_ps):
                 else:
                     l_dif.append(l_gt[j])
                 j+=1
+    
     for i in range (t_ps):
-        l_dif[i]-=l_ps[i]
+        l_ret.append(l_dif[i]-l_ps[i])
     #Variance
-    moy = sum(l_dif)/t_ps
+    moy = sum(l_ret)/t_ps
     vari = 0
 
-    for i in l_dif:
+    for i in l_ret:
         vari += ((i - moy)**2)/t_ps
     v_temp=np.sqrt(vari)
-    if v_temp>100:
-        return 0
-    else :
-        return 100-v_temp
+    if t_gt != t_ps:
+        diff=5
+    else:
+        diff=0
+    #print("l_gt",l_gt,"\nl_ps",l_ps,"\nl_di",l_dif,"\nv_temp",v_temp,"\nmoy",moy,"\ndiff",diff)
+    #print(100-v_temp-moy-diff)
+    #input()
+    
+    return 100-v_temp-abs(moy)-diff
 
 
 
@@ -52,16 +59,17 @@ def calcul_distance_date_hor(date):
     num_set = set(['0','1','2','3','4','5','6','7','8','9'])
     tot=0
     #On calcul le nombre de minutes avec le début du mois
-
+    """
     for i in range (len(date[1])):
         if date[1][i] not in num_set:
             #heure * 60 + minute
             tot = int(date[1][:i])*60+int(date[1][i+1:])
             break
     #On ajoute le nbr de jour * 1440
-    tot += (int(date[0][-2:])-1)*1440
+    """
+    tot = (int(date[0][-2:]))#*1440
 
-    return tot/(30*1440)*100
+    return tot#/(30*1440)*100
 
 def distancehoraireetdate(ground_truth_bis,S_bis):
     print("c'est la fonction qui calcul la distance par rapport a la date et a l'horaire")
