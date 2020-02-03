@@ -53,7 +53,7 @@ def calcul_moy(list_id,liste_ffile,coef):
                 Ffile.append([])
                 for tt_mettre in range (len(Ffile[0])):
                     Ffile[month+1].append({})
-                    
+                   
             for num_ps in range (len(liste_ffile[k][0])):
                 num_gt = dico_indice_gt[liste_ffile[k][0][num_ps]]
                 for id_ps in liste_ffile[k][month+1][num_ps].keys():
