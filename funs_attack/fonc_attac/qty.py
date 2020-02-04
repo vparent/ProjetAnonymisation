@@ -69,6 +69,7 @@ def qty(gt, s):
                             result1[i][j][id_] += k
                             nb += 1
                     result1[i][j][id_] = result1[i][j][id_] / nb
+                    result1[i][j][id_] = (1 - result1[i][j][id_]) * 100
     return result1
 
 """
