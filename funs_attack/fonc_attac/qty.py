@@ -50,9 +50,9 @@ def qty(gt, s):
                 y = month_translator(ttT["date"])
                 nbA = int(ttA["qty"])
                 nbT = int(ttT["qty"])
-                if y > 14:
-                    print(ttT["date"])
-                if ttA["id_user"] in result1[y][idx].keys():
+                if nbA == 0 and nbT == 0:
+                    result1[y][idx][ttA["id_user"]].append(0)
+                elif ttA["id_user"] in result1[y][idx].keys():
                     result1[y][idx][ttA["id_user"]].append(abs(nbA-nbT)/max(nbA, nbT))
                 else:
                     result1[y][idx][ttA["id_user"]] = [abs(nbA-nbT)/max(nbA, nbT)]
