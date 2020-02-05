@@ -5,12 +5,12 @@ import src.anon as a
 
 def main():
 
-    print("merging item set classes...")
-    gt0 = a.merge_item_set_classes(u.gt)
-    print("done")
-    r_gt = gt0
+    # print("merging item set classes...")
+    # gt0 = a.merge_item_set_classes(u.gt)
+    # print("done")
+    r_gt = u.gt
     nb_deleted = 0
-    for i in range(2):
+    for i in range(3):
         print("uniform_nb_transac")
         r_gt, nb_deleted = a.uniform_nb_transac(r_gt, nb_deleted, len(u.gt) / 2)
         print("done")
@@ -21,12 +21,14 @@ def main():
     print("done")
 
     print("uniformisation date")
-    r_ngt = [a.uniform_date(gt, 5) for gt in ngt]
+    ngt = [a.uniform_date(gt) for gt in ngt]
     print("done")
 
+    print("uniformisation hours")
+    ngt = [a.uniform_hours(gt) for gt in ngt]
 
     print("writing")
-    u.write_data("2-COINSTI.csv", r_ngt)
+    u.write_data("2-COINSTI.csv", ngt)
     print("done")
 
 
