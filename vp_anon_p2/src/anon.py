@@ -186,3 +186,42 @@ def uniform_hours(df, tresh=0.50):
         i += 1
 
     return df
+
+
+def get_uid_freq(df):
+    uids = u.get_item('id_user', df)
+
+    l_uids = [row['id_user'] for row in df]
+
+    d_uid_nb_transac = {uid: l_uids.count(uid) for uid in uids}
+
+    return d_uid_nb_transac
+
+
+def uniform_nb_transac(df, nb_deleted, nb_max_deletion):
+    d_uid_freq = get_uid_freq(df)
+    l_freq = list(d_uid_freq.values())
+    s_freq = set(d_uid_freq.values())
+
+    d_freq_nb_app = {freq: l_freq.count(freq) for freq in s_freq}
+    d_freq_nb_app = {l_freq.count(freq): freq for freq in s_freq}
+
+    l_tuple_freq_nb_app = list(d_freq_nb_app.items())
+    l_tuple_freq_nb_app.sort()
+
+    for i in range(len(l_tuple_freq_nb_app), 2):
+        if i < len(l_tuple_freq_nb_app) and i+1 < len(l_tuple_freq_nb_app):
+            for uid in {item[0] for item in d_uid_freq.items() if item[1] ==
+                        l_tuple_freq_nb_app[i]}:
+                idx_transac_uid = [i for i in range(len(df)) if df[i]['id_user'] == uid]
+                idx_to_del = {}
+                for i in range(l_tuple_freq_nb_app[i+1][1] -
+                               l_tuple_freq_nb_app[i][1]):
+                    if nb_deleted < nb_max_deletion:
+                        while len(idx_to_del) < l_tuple_freq_nb_app[i+1][1] - l_tuple_freq_nb_app[i][1]:
+                            idx_to_del |= rd.choice(idx_transac_uid)
+                        nb_deleted += len(idx_to_del)
+                for idx in idx_to_del:
+                    df[idx]["id_user"] = "DEL"
+
+    return df
